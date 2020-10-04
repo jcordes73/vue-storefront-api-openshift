@@ -22,7 +22,7 @@
     "excludeDisabledProducts": false
   },
   "elasticsearch": {
-    "host": "localhost",
+    "host": "elasticsearch",
     "index": "vue_storefront_catalog",
     "port": 9200,
     "protocol": "http",
@@ -130,7 +130,7 @@
     "enabled": false
   },
   "redis": {
-    "host": "localhost",
+    "host": "redis",
     "port": 6379,
     "db": 0,
     "auth": false
