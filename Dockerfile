@@ -18,7 +18,7 @@ RUN \
     chgrp -R 0 /opt/app-root/src && \
     chmod -R g=u /opt/app-root/src
 
-EXPOSE 3000
+EXPOSE 8080
 
 USER 1001
 
