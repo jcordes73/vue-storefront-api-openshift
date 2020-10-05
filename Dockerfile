@@ -6,7 +6,10 @@ WORKDIR /opt/app-root/src
 
 USER 0
 COPY . .
-RUN chown -R 1001:0 /opt/app-root/src
+RUN \
+    chown -R 1001:0 /opt/app-root/src && \
+    chgrp -R 0 /opt/app-root/src && \
+    chmod -R g=u /opt/app-root/src
 USER 1001
 
 RUN npm install --global yarn \
