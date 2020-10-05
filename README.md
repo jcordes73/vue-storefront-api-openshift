@@ -12,6 +12,7 @@ The installation of the Vue Storefront API consists of the following parts
 - Installing ElasticSearch 5.6
 - Installing Redis 4
 - Installing Vue Storefront API
+- Adding labels/annotations for Topology View
 
 The installation of Red Hat OpenShift Container Platform is not part of this project. For a local deployment on your desktop/laptop consider using [Red Hat CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).
 
@@ -37,8 +38,15 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 
 ### Installing Vue Storefront API
 
-	oc new-app https://github.com/jcordes73/vue-storefront-openshift --name vue-storefront --env-file=default.env
-	oc expose svc vue-storefront
+	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=default.env
+
+### Adding labels/annotations for Topology View
+
+	oc label bc/vue-storefront-api app.openshift.io/runtime=nodejs
+	oc label deployment/vue-storefront-api app.openshift.io/runtime=nodejs
+	oc annotate bc/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
+	oc annotate deployment/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
+	oc annotate deployment/vue-storefront-api app.openshift.io/connects-to=elasticsearch,redis
 
 ## Next steps
 
