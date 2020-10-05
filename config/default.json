@@ -22,7 +22,7 @@
     "excludeDisabledProducts": false
   },
   "elasticsearch": {
-    "host": "elasticsearch",
+    "host": "http://elasticsearch:9200",
     "index": "vue_storefront_catalog",
     "port": 9200,
     "protocol": "http",
