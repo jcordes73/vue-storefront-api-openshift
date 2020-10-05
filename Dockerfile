@@ -16,4 +16,4 @@ RUN npm install --global yarn \
 
 EXPOSE 8080
 
-CMD ["/vue-storefront-api.sh"]
+CMD ["vue-storefront-api.sh"]
