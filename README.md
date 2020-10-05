@@ -19,7 +19,7 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 ### Cloning of the Vue Storefront API for OpenShift repository
 
 	git clone https://github.com/jcordes73/vue-storefront-api-openshift
-        cd vue-storefront-api-openshift
+	cd vue-storefront-api-openshift
 
 ### Logging in into OpenShift and creation of a project
 
