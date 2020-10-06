@@ -14,6 +14,7 @@ The installation of the Vue Storefront API consists of the following parts
 - Installing Redis 4
 - Installing Vue Storefront API
 - Adding labels/annotations for Topology View
+- Install Magento 2
 
 The installation of Red Hat OpenShift Container Platform is not part of this project. For a local deployment on your desktop/laptop consider using [Red Hat CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).
 
@@ -59,6 +60,30 @@ To undo the configuration changes execute the following
 	oc annotate bc/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
 	oc annotate deployment/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
 	oc annotate deployment/vue-storefront-api app.openshift.io/connects-to=elasticsearch,redis
+
+### Installing Magento
+
+Installing Magento requires multiple steps:
+
+- Installing MariaDB
+- Installing the Magento 2 container
+
+To deploy MariaDB 10.3 on execute the following
+
+        oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="bn_magento" -e MYSQL_USER="bn_magento" -e MYSQL_PASSWORD="pass"
+        oc label deployment/mariadb app.openshift.io/runtime=mariadb
+
+Now you can deploy the Magento 2 container
+
+        oc new-app php:7.3~https://github.com/jcordes73/magento2#2.3 --name magento
+        oc rsh deployments/magento magento setup:install --db-host mariadb --db-name bn_magento --db-user bn_magento --db-password pass --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
+        oc rsh deployments/magento magento admin:user:create --admin-user=admin --admin-password='RedHat2020!' --admin-email="jcordes@redhat.com" --admin-firstname="Jochen" --admin-lastname="Cordes"
+        oc label deployment/magento app.openshift.io/runtime=php
+        oc annotate deployment/magento app.openshift.io/vcs-uri="https://github.com/jcordes73/magento2"
+        oc annotate deployment magento app.openshift.io/connects-to=vue-storefront-api,mariadb
+        oc expose svc magento
+
+Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration"), modify the magento2 section in config/openshift.json to reflect the tokens and URLs.
 
 ## Next steps
 
