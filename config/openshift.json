@@ -158,7 +158,7 @@
       "name": "German Store",
       "url": "/de",
       "elasticsearch": {
-        "host": "http://elasticsearch:9200/api/catalog",
+        "host": "localhost:8080/api/catalog",
         "index": "vue_storefront_catalog_de"
       },
       "msi": {
@@ -193,7 +193,7 @@
       "name": "Italian Store",
       "url": "/it",
       "elasticsearch": {
-        "host": "http://elasticsearch:9200/api/catalog",
+        "host": "localhost:8080/api/catalog",
         "index": "vue_storefront_catalog_it"
       },
       "msi": {

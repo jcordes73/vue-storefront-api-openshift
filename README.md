@@ -38,10 +38,18 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 
 ### Installing Vue Storefront API
 
-	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=default.env
-	oc create configmap vue-storefront-api --from-file=config/local.json --from-file=config/default.json --from-file=config/test.json --from-file=config/custom-environment-variables.json
-	oc set volumes deployments vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
+	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=openshift.env
         oc expose svc vue-storefront-api
+
+In case you want to adjust the configuration follow these steps
+
+	oc create configmap vue-storefront-api --from-file=config
+        oc set volumes deployments vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
+
+To undo the configuration changes execute the following
+
+	oc set volumes deployment vue-storefront-api --remove --name=vue-storefront-api-config-volume
+	oc delete cm vue-storefront-api
 
 ### Adding labels/annotations for Topology View
 
