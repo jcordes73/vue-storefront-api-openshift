@@ -22,7 +22,7 @@
     "excludeDisabledProducts": false
   },
   "elasticsearch": {
-    "host": "http://elasticsearch:9200",
+    "host": "elasticsearch",
     "index": "vue_storefront_catalog",
     "port": 9200,
     "protocol": "http",
@@ -284,14 +284,14 @@
     }
   },
   "magento2": {
-    "imgUrl": "http://demo-magento2.vuestorefront.io/media/catalog/product",
-    "assetPath": "/../var/magento2-sample-data/pub/media",
+    "imgUrl": "http://magento-2-vue-storefront.apps-crc.testing/media/catalog/product",
+    "assetPath": "/../pub/media",
     "api": {
-      "url": "http://demo-magento2.vuestorefront.io/rest",
-      "consumerKey": "byv3730rhoulpopcq64don8ukb8lf2gq",
-      "consumerSecret": "u9q4fcobv7vfx9td80oupa6uhexc27rb",
-      "accessToken": "040xx3qy7s0j28o3q0exrfop579cy20m",
-      "accessTokenSecret": "7qunl3p505rubmr7u1ijt7odyialnih9"
+      "url": "http://vue-storefront-api-vue-storefront.apps-crc.testing/rest",
+      "consumerKey": "9vlgtvh60fo8y715d47thtdpvqviyljo",
+      "consumerSecret": "6wb5kc4outr8opexn2hsanjhmvkregzc",
+      "accessToken": "o3lj4gsud5htsc5eysascjv6cw0sx7eb",
+      "accessTokenSecret": "g6n7jr5vzkyjsh5vths0thiu0yn33lkh"
     }
   },
   "magento1": {
