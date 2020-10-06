@@ -1,6 +1,7 @@
 # Vue Storefront API on OpenShift
 
 ## About
+
 This project contains a version of the [Vue Storefront API](https://github.com/DivanteLtd/vue-storefront-api) deployable on [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform).
 
 ## Installation
