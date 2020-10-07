@@ -55,7 +55,6 @@ To undo the configuration changes execute the following
 
 ### Adding labels/annotations for Topology View
 
-	oc label bc/vue-storefront-api app.openshift.io/runtime=nodejs
 	oc label deployment/vue-storefront-api app.openshift.io/runtime=nodejs
 	oc annotate bc/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
 	oc annotate deployment/vue-storefront-api app.openshift.io/vcs-uri="https://github.com/jcordes73/vue-storefront-api-openshift"
