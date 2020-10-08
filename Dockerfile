@@ -12,8 +12,8 @@ USER 1001
 
 RUN npm install --global yarn \
   && yarn install \
-  && yarn cache clean \
-  && yarn build
+  && yarn build \
+  && yarn cache clean
 
 EXPOSE 8080
 
