@@ -41,12 +41,13 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 ### Installing Vue Storefront API
 
 	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=openshift.env
-        oc expose svc vue-storefront-api
+	oc expose svc vue-storefront-api
+	oc rsh deployments/vue-storefront-api yarn db new
 
 In case you want to adjust the configuration follow these steps
 
 	oc create configmap vue-storefront-api --from-file=config
-        oc set volumes deployments vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
+	oc set volumes deployments vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
 
 To undo the configuration changes execute the following
 
@@ -69,20 +70,22 @@ Installing Magento requires multiple steps:
 
 To deploy MariaDB 10.3 on execute the following
 
-        oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="bn_magento" -e MYSQL_USER="bn_magento" -e MYSQL_PASSWORD="pass"
-        oc label deployment/mariadb app.openshift.io/runtime=mariadb
+	oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="bn_magento" -e MYSQL_USER="bn_magento" -e MYSQL_PASSWORD="pass"
+	oc label deployment/mariadb app.openshift.io/runtime=mariadb
 
 Now you can deploy the Magento 2 container
 
-        oc new-app php:7.3~https://github.com/jcordes73/magento2#2.3 --name magento
-        oc rsh deployments/magento magento setup:install --db-host mariadb --db-name bn_magento --db-user bn_magento --db-password pass --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
-        oc rsh deployments/magento magento admin:user:create --admin-user=admin --admin-password='RedHat2020!' --admin-email="jcordes@redhat.com" --admin-firstname="Jochen" --admin-lastname="Cordes"
-        oc label deployment/magento app.openshift.io/runtime=php
-        oc annotate deployment/magento app.openshift.io/vcs-uri="https://github.com/jcordes73/magento2"
-        oc annotate deployment magento app.openshift.io/connects-to=vue-storefront-api,mariadb
-        oc expose svc magento
+	oc new-app php:7.3~https://github.com/jcordes73/magento2#2.3 --name magento
+	oc rsh deployments/magento magento setup:install --db-host mariadb --db-name bn_magento --db-user bn_magento --db-password pass --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
+	oc rsh deployments/magento magento admin:user:create --admin-user=admin --admin-password='RedHat2020!' --admin-email="jcordes@redhat.com" --admin-firstname="Jochen" --admin-lastname="Cordes"
+	oc label deployment/magento app.openshift.io/runtime=php
+	oc annotate deployment/magento app.openshift.io/vcs-uri="https://github.com/jcordes73/magento2"
+	oc annotate deployment magento app.openshift.io/connects-to=vue-storefront-api,mariadb
+	oc expose svc magento
 
-Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration"), modify the magento2 section in config/openshift.json to reflect the tokens and URLs.
+Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration"), modify the magento2 section in config/openshift.json to reflect the tokens and URLs, afterwards apply the changed of the configuration. After Vue Storefront API has been restart execute
+
+	oc rsh deployments/vue-storefront-api yarn mage2vs import
 
 ## Next steps
 
