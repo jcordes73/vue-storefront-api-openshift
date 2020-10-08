@@ -31,11 +31,15 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 ### Installing ElasticSearch 5.6
 
 	oc new-app elasticsearch:5.6.11 --name elasticsearch -e discovery.type=single-node
+        oc create -f elasticsearch-pvc.yml
+        oc set volume deployment/elasticsearch --add --overwrite --name=elasticsearch-volume-1 --type=persistentVolumeClaim --claim-name=elasticsearch-pvc
 	oc label deployment/elasticsearch app.openshift.io/runtime=elastic
 
 ### Installing Redis 4
 
 	oc new-app redis:4 --name redis
+        oc create -f redis-pvc.yml
+        oc set volume deployment/redis --add --overwrite --name=redis-volume-1 --type=persistentVolumeClaim --claim-name=redis-pvc
 	oc label deployment/redis app.openshift.io/runtime=redis
 
 ### Installing Vue Storefront API
@@ -47,7 +51,7 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 In case you want to adjust the configuration follow these steps
 
 	oc create configmap vue-storefront-api --from-file=config
-	oc set volumes deployments vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
+	oc set volumes deployment/vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
 
 To undo the configuration changes execute the following
 
@@ -71,6 +75,8 @@ Installing Magento requires multiple steps:
 To deploy MariaDB 10.3 on execute the following
 
 	oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="bn_magento" -e MYSQL_USER="bn_magento" -e MYSQL_PASSWORD="pass"
+        oc set volumes deployment/mariadb --add --name mariadb-volume-1 --type=persistentVolumeClaim --claim-name=mariadb-pvc --mount-path=/var/lib/mysql/data
+        oc create -f mariadb-pvc.yml
 	oc label deployment/mariadb app.openshift.io/runtime=mariadb
 
 Now you can deploy the Magento 2 container
