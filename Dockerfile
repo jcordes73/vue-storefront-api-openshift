@@ -13,7 +13,7 @@ RUN npm install --global yarn \
   && yarn cache clean
 
 RUN chown -R 1001:0 /opt/app-root/src \
-    && chmod 775 /opt/app-root/src
+    && chmod -R 775 /opt/app-root/src
 
 EXPOSE 8080
 
