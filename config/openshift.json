@@ -6,7 +6,16 @@
     "useOutputCacheTagging": false,
     "useOutputCache": false,
     "outputCacheDefaultTtl": 86400,
-    "availableCacheTags": ["P", "C", "T", "A", "product", "category", "attribute", "taxrule"],
+    "availableCacheTags": [
+      "P",
+      "C",
+      "T",
+      "A",
+      "product",
+      "category",
+      "attribute",
+      "taxrule"
+    ],
     "invalidateCacheKey": "aeSu7aip",
     "invalidateCacheForwarding": false,
     "invalidateCacheForwardUrl": "http://localhost:3000/invalidate?key=aeSu7aip&tag=",
@@ -50,11 +59,15 @@
     "searchScoring": {
       "attributes": {
         "attribute_code": {
-          "scoreValues": { "attribute_value": { "weight": 1 } }
+          "scoreValues": {
+            "attribute_value": {
+              "weight": 1
+            }
+          }
         }
       },
       "fuzziness": 2,
-      "cutoff_frequency":  0.01,
+      "cutoff_frequency": 0.01,
       "max_expansions": 3,
       "minimum_should_match": "75%",
       "prefix_length": 2,
@@ -76,7 +89,27 @@
     }
   },
   "products": {
-    "fieldsToCompress": ["max_regular_price", "max_price", "max_regular_price", "minimal_regular_price", "final_price", "price", "special_price", "original_final_price", "original_price", "original_special_price", "final_price_incl_tax", "price_incl_tax", "special_price_incl_tax", "final_price_tax", "price_tax", "special_price_tax", "image", "small_image", "thumbnail"],
+    "fieldsToCompress": [
+      "max_regular_price",
+      "max_price",
+      "max_regular_price",
+      "minimal_regular_price",
+      "final_price",
+      "price",
+      "special_price",
+      "original_final_price",
+      "original_price",
+      "original_special_price",
+      "final_price_incl_tax",
+      "price_incl_tax",
+      "special_price_incl_tax",
+      "final_price_tax",
+      "price_tax",
+      "special_price_tax",
+      "image",
+      "small_image",
+      "thumbnail"
+    ],
     "fieldsToCompact": {
       "minimal_price": "mp",
       "has_options": "ho",
@@ -116,10 +149,21 @@
     "priceFilterKey": "final_price",
     "priceFilters": {
       "ranges": [
-        { "from": 0, "to": 50 },
-        { "from": 50, "to": 100 },
-        { "from": 100, "to": 150 },
-        { "from": 150 }
+        {
+          "from": 0,
+          "to": 50
+        },
+        {
+          "from": 50,
+          "to": 100
+        },
+        {
+          "from": 100,
+          "to": 150
+        },
+        {
+          "from": 150
+        }
       ]
     }
   },
@@ -271,7 +315,9 @@
         "user": "vuestorefront",
         "pass": "vuestorefront.io"
       },
-      "targetAddressWhitelist": ["contributors@vuestorefront.io"],
+      "targetAddressWhitelist": [
+        "contributors@vuestorefront.io"
+      ],
       "secretString": "__THIS_IS_SO_SECRET__"
     },
     "example-processor": {
@@ -280,14 +326,16 @@
       }
     },
     "example-custom-filter": {
-      "catalogFilter": [ "SampleFilter" ]
+      "catalogFilter": [
+        "SampleFilter"
+      ]
     }
   },
   "magento2": {
     "imgUrl": "http://magento-vue-storefront.apps-crc.testing/media/catalog/product",
     "assetPath": "/../pub/media",
     "api": {
-      "url": "http://vue-storefront-api-vue-storefront.apps-crc.testing/rest",
+      "url": "http://vue-storefront-api-vue-storefront.apps-crc.testing",
       "consumerKey": "zcxoy017bnsjjwkesquvzb1j1hveghgk",
       "consumerSecret": "mnq23v4enllgtx18r3zxd2n3x4dyhmjy",
       "accessToken": "v0bl2qh3rqdoknm1f1pdqdvh1f9kijua",
@@ -346,21 +394,68 @@
     }
   },
   "entities": {
-      "category": {
-        "includeFields": [ "children_data", "id", "children_count", "sku", "name", "is_active", "parent_id", "level", "url_key" ]
-      },
-      "attribute": {
-        "includeFields": [ "attribute_code", "id", "entity_type_id", "options", "default_value", "is_user_defined", "frontend_label", "attribute_id", "default_frontend_label", "is_visible_on_front", "is_visible", "is_comparable" ],
-        "loadByAttributeMetadata": false
-      },
-      "product": {
-        "excludeFields": [ "updated_at", "created_at", "attribute_set_id", "status", "visibility", "tier_prices", "options_container", "msrp_display_actual_price_type", "has_options", "stock.manage_stock", "stock.use_config_min_qty", "stock.use_config_notify_stock_qty", "stock.stock_id",  "stock.use_config_backorders", "stock.use_config_enable_qty_inc", "stock.enable_qty_increments", "stock.use_config_manage_stock", "stock.use_config_min_sale_qty", "stock.notify_stock_qty", "stock.use_config_max_sale_qty", "stock.use_config_max_sale_qty", "stock.qty_increments", "small_image"],
-        "includeFields": null,
-        "filterFieldMapping": {
-          "category.name": "category.name.keyword"
-        }
-      }
+    "category": {
+      "includeFields": [
+        "children_data",
+        "id",
+        "children_count",
+        "sku",
+        "name",
+        "is_active",
+        "parent_id",
+        "level",
+        "url_key"
+      ]
     },
+    "attribute": {
+      "includeFields": [
+        "attribute_code",
+        "id",
+        "entity_type_id",
+        "options",
+        "default_value",
+        "is_user_defined",
+        "frontend_label",
+        "attribute_id",
+        "default_frontend_label",
+        "is_visible_on_front",
+        "is_visible",
+        "is_comparable"
+      ],
+      "loadByAttributeMetadata": false
+    },
+    "product": {
+      "excludeFields": [
+        "updated_at",
+        "created_at",
+        "attribute_set_id",
+        "status",
+        "visibility",
+        "tier_prices",
+        "options_container",
+        "msrp_display_actual_price_type",
+        "has_options",
+        "stock.manage_stock",
+        "stock.use_config_min_qty",
+        "stock.use_config_notify_stock_qty",
+        "stock.stock_id",
+        "stock.use_config_backorders",
+        "stock.use_config_enable_qty_inc",
+        "stock.enable_qty_increments",
+        "stock.use_config_manage_stock",
+        "stock.use_config_min_sale_qty",
+        "stock.notify_stock_qty",
+        "stock.use_config_max_sale_qty",
+        "stock.use_config_max_sale_qty",
+        "stock.qty_increments",
+        "small_image"
+      ],
+      "includeFields": null,
+      "filterFieldMapping": {
+        "category.name": "category.name.keyword"
+      }
+    }
+  },
   "usePriceTiers": false,
   "boost": {
     "name": 3,
@@ -372,9 +467,23 @@
   },
   "urlModule": {
     "map": {
-      "includeFields": ["url_path", "identifier", "id", "slug", "sku", "type_id"],
-      "searchedFields": ["url_path", "identifier"],
-      "searchedEntities": ["product", "category", "cms_page"]
+      "includeFields": [
+        "url_path",
+        "identifier",
+        "id",
+        "slug",
+        "sku",
+        "type_id"
+      ],
+      "searchedFields": [
+        "url_path",
+        "identifier"
+      ],
+      "searchedEntities": [
+        "product",
+        "category",
+        "cms_page"
+      ]
     }
   }
 }

@@ -7,13 +7,13 @@ WORKDIR /opt/app-root/src
 COPY . .
 COPY vue-storefront-api.sh /usr/local/bin/
 
+RUN test -z "$NPM_MIRROR" || npm config set registry $NPM_MIRROR
 RUN npm install --global yarn \
-  && yarn install \
-  && yarn build \
-  && yarn cache clean
+ && yarn install \
+ && yarn build \
+ && yarn cache clean
 
-RUN chown -R 1001:0 /opt/app-root/src \
-    && chmod -R 775 /opt/app-root/src
+RUN chown -R 1001:0 /opt/app-root/src && chmod -R 775 /opt/app-root/src
 
 EXPOSE 8080
 

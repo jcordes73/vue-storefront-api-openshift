@@ -89,7 +89,19 @@ Now you can deploy the Magento 2 container
 	oc annotate deployment magento app.openshift.io/connects-to=vue-storefront-api,mariadb
 	oc expose svc magento
 
-Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration"), modify the magento2 section in config/openshift.json to reflect the tokens and URLs, afterwards apply the changed of the configuration. After Vue Storefront API has been restart execute
+Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration").
+
+Now modify the magento2 section in config/openshift.json the URLs like this:
+
+	MAGENTO_URL=http://`oc get route magento -o json | jq .spec.host -r`
+	API_URL=http://`oc get route vue-storefront-api -o json | jq .spec.host -r`
+
+	jq ".magento2.imgUrl=\"$MAGENTO_URL/media/catalog/product\"" config/openshift.json > config/openshift.json.tmp
+	jq ".magento2.api.url=\"$API_URL\"" config/openshift.json.tmp > config/openshift.json
+
+, change the tokens in the magento2 section and afterwards apply the change of the configuration.
+
+After Vue Storefront API has been restart execute
 
 	oc rsh deployments/vue-storefront-api yarn mage2vs import
 
