@@ -8,7 +8,7 @@ COPY . .
 COPY vue-storefront-api.sh /usr/local/bin/
 
 RUN test -z "$NPM_MIRROR" || npm config set registry $NPM_MIRROR
-RUN npm install --global yarn 
+RUN npm install --global yarn \
  && yarn install \
  && yarn build \
  && yarn cache clean
