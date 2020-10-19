@@ -174,7 +174,7 @@
     "enabled": false
   },
   "redis": {
-    "host": "redis",
+    "host": "redis-cache",
     "port": 6379,
     "db": 0,
     "auth": false
@@ -336,10 +336,10 @@
     "assetPath": "/../pub/media",
     "api": {
       "url": "http://vue-storefront-api-vue-storefront.apps-crc.testing",
-      "consumerKey": "zcxoy017bnsjjwkesquvzb1j1hveghgk",
-      "consumerSecret": "mnq23v4enllgtx18r3zxd2n3x4dyhmjy",
-      "accessToken": "v0bl2qh3rqdoknm1f1pdqdvh1f9kijua",
-      "accessTokenSecret": "sm3l8pg6znbf29uhlmyzccpfiletahe0"
+      "consumerKey": "sagm7iu3v9vywi1zndgq1hwa02cp1g66",
+      "consumerSecret": "nrp040btz3m129nlsfyuyfdbeiaelol2",
+      "accessToken": "i31ha1l2kd1l7ciwruuavfgr0lorzxde",
+      "accessTokenSecret": "t85y63pk5m9cmy72045qqmj88sumlzvd"
     }
   },
   "magento1": {
@@ -485,5 +485,8 @@
         "cms_page"
       ]
     }
+  },
+  "api": {
+    "url": "http://"
   }
 }
