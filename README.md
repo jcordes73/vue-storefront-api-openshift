@@ -130,7 +130,7 @@ After the container has started up succesfully you can continue with the setup o
 	oc annotate deployment/magento app.openshift.io/connects-to=vue-storefront-api,mariadb
 	oc create route edge --service magento
 
-Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration").
+Login to Magento 2 with the admin user created at the path /admin and create an integration (under "System" / "Integration").
 
 Now modify the magento2 and imageable section in config/openshift.json the URLs like this:
 
