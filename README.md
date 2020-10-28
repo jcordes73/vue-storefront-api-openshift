@@ -4,6 +4,24 @@
 
 This project contains a version of the [Vue Storefront API](https://github.com/DivanteLtd/vue-storefront-api) deployable on [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform).
 
+## Pre-requistes
+
+### Git client
+
+To checkout the projects from Github, install a git client on RHEL 8 like this:
+
+	yum install -y git
+
+### OpenShift Client (oc)
+
+You can download the OpenShift Client 4.5 [here](https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.5/linux/oc.tar.gz)
+
+### jq
+
+For modification of JSON config files we use jq, install it like this on RHEL 8:
+
+	yum install -y jq
+
 ## Installation
 
 The installation of the Vue Storefront API consists of the following parts
@@ -31,21 +49,21 @@ The installation of Red Hat OpenShift Container Platform is not part of this pro
 ### Installing ElasticSearch 5.6
 
 	oc new-app elasticsearch:5.6.11 --name elasticsearch -e discovery.type=single-node
-        oc create -f elasticsearch-pvc.yml
-        oc set volume deployment/elasticsearch --add --overwrite --name=elasticsearch-volume-1 --type=persistentVolumeClaim --claim-name=elasticsearch-pvc
+	oc create -f elasticsearch-pvc.yml
+	oc set volume deployment/elasticsearch --add --overwrite --name=elasticsearch-volume-1 --type=persistentVolumeClaim --claim-name=elasticsearch-pvc
 	oc label deployment/elasticsearch app.openshift.io/runtime=elastic
 
 ### Installing Redis 4
 
 	oc new-app redis:4 --name redis-cache
-        oc create -f redis-cache-pvc.yml
-        oc set volume deployment/redis-cache --add --overwrite --name=redis-cache-volume-1 --type=persistentVolumeClaim --claim-name=redis-cache-pvc
+	oc create -f redis-cache-pvc.yml
+	oc set volume deployment/redis-cache --add --overwrite --name=redis-cache-volume-1 --type=persistentVolumeClaim --claim-name=redis-cache-pvc
 	oc label deployment/redis-cache app.openshift.io/runtime=redis
 
 ### Installing Vue Storefront API
 
-	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=openshift.env [--build-env=NPM_MIRROR=<Your NPM Mirror>]
-        oc create route edge --service vue-storefront-api
+	oc new-app https://github.com/jcordes73/vue-storefront-api-openshift --name vue-storefront-api --env-file=openshift.env [-e NODE_TLS_REJECT_UNAUTHORIZED=0--build-env=NPM_MIRROR=<Your NPM Mirror>]
+	oc create route edge --service vue-storefront-api
 
 After the container has started up initialize the database
 
@@ -68,44 +86,68 @@ Installing Magento requires multiple steps:
 - Installing MariaDB
 - Installing the Magento 2 container
 
-To deploy MariaDB 10.3 on execute the following
+To deploy MariaDB 10.3 execute the following
 
-	oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="bn_magento" -e MYSQL_USER="bn_magento" -e MYSQL_PASSWORD="pass"
-        oc set volumes deployment/mariadb --add --name mariadb-volume-1 --type=persistentVolumeClaim --claim-name=mariadb-pvc --mount-path=/var/lib/mysql/data
-        oc create -f mariadb-pvc.yml
+	oc new-app registry.redhat.io/rhel8/mariadb-103 --name mariadb -e MYSQL_DATABASE="magento" -e MYSQL_USER="magento" -e MYSQL_PASSWORD="pass"
+	oc set volumes deployment/mariadb --add --name mariadb-volume-1 --type=persistentVolumeClaim --claim-name=mariadb-pvc --mount-path=/var/lib/mysql/data
+	oc create -f mariadb-pvc.yml
 	oc label deployment/mariadb app.openshift.io/runtime=mariadb
-        oc label deployment/mariadb app.kubernetes.io/part-of=magento
+	oc label deployment/mariadb app.kubernetes.io/part-of=magento
+
+From a system subscribed to RHEL 8 copy the entitlement, subscription configuration and certificates like this
 
 Now you can deploy the Magento 2.3 container
 
-	oc new-app php:7.3~https://github.com/jcordes73/magento2#2.3 --name magento
-        oc set volumes deployment/magento --add --name magento-volume-1 --type=persistentVolumeClaim --claim-name=magento-pvc --mount-path=/opt/app-root/src/app/etc
-        oc create -f magento-pvc.yml
+	scp -r root@<RHEL 8 System>:/etc/pki/entitlement .
+	scp -r root@<RHEL 8 System>:/etc/rhsm .
+	scp -r root@<RHEL 8 System>:/etc/rhsm/ca .
+
+Now you can deploy the Magento 2.3 container
+
+	oc create configmap rhsm-conf --from-file rhsm
+	oc create configmap rhsm-ca --from-file ca
+	oc create configmap pki-entitlement --from-file entitlement
+
+	oc new-app https://github.com/jcordes73/magento2#2.3 --name magento \
+	--build-env MAGENTO_DATABASE_HOST=mariadb \
+	--build-env MAGENTO_DATABASE_NAME=magento \
+	--build-env MAGENTO_DATABASE_USERNAME=magento \
+	--build-env MAGENTO_DATABASE_PASSWORD=pass \
+	--build-env MAGENTO_ADMIN_USER=admin \
+	--build-env MAGENTO_ADMIN_PASSWORD='magento2020' \
+	--build-env MAGENTO_ADMIN_EMAIL='admin@magento.com' \
+	--build-env MAGENTO_ADMIN_FIRSTNAME='first' \
+	--build-env MAGENTO_ADMIN_LASTNAME='last' \
+	--dry-run=true -o json | \
+	jq '.items[1].spec.source.configMaps=[{"configMap":{"name":"rhsm-conf"},"destinationDir":"rhsm-conf"},{"configMap":{"name":"rhsm-ca"},"destinationDir":"rhsm-ca"},{"configMap":{"name":"pki-entitlement"},"destinationDir":"pki-entitlement"}]' | \
+	oc create -f -
 
 After the container has started up succesfully you can continue with the setup of Magento:
 
-	oc rsh deployments/magento magento setup:install --db-host mariadb --db-name bn_magento --db-user bn_magento --db-password pass --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1
-	oc rsh deployments/magento magento admin:user:create --admin-user=admin --admin-password='RedHat2020!' --admin-email="jcordes@redhat.com" --admin-firstname="Jochen" --admin-lastname="Cordes"
 	oc label deployment/magento app.openshift.io/runtime=php
-        oc label deployment/magento app.kubernetes.io/part-of=magento
+	oc label deployment/magento app.kubernetes.io/part-of=magento
 	oc annotate deployment/magento app.openshift.io/vcs-uri="https://github.com/jcordes73/magento2"
 	oc annotate deployment/magento app.openshift.io/connects-to=vue-storefront-api,mariadb
-	oc expose svc magento
+	oc create route edge --service magento
 
 Login to Magento 2 with the admin user created at the path indicated by setup:install and create an integration (under "System" / "Integration").
 
-Now modify the magento2 section in config/openshift.json the URLs like this:
+Now modify the magento2 and imageable section in config/openshift.json the URLs like this:
 
-	MAGENTO_URL=https://`oc get route magento -o json | jq .spec.host -r`
-	API_URL=https://`oc get route vue-storefront-api -o json | jq .spec.host -r`
+	MAGENTO_HOST=`oc get route magento -o json | jq .spec.host -r`
+	VS_HOST=`oc get route vue-storefront -o json | jq .spec.host -r`	
+	MAGENTO_URL=https://$MAGENTO_HOST
 
 	jq ".magento2.imgUrl=\"$MAGENTO_URL/media/catalog/product\"" config/openshift.json > config/openshift.json.tmp
-	jq ".magento2.api.url=\"$API_URL\"" config/openshift.json.tmp > config/openshift.json
+	jq ".magento2.api.url=\"$MAGENTO_URL/rest\"" config/openshift.json.tmp > config/openshift.json
+	jq ".imageable.whitelist.allowedHosts = [\"$MAGENTO_HOST\",\"MAGENTO_HOST\"]" config/openshift.json > config/openshift.json.tmp
+
+	mv config/openshift.json.tmp config/openshift.json
 
 , change the tokens in the magento2 section and afterwards apply the change of the configuration like this:
 
 	oc create configmap vue-storefront-api --from-file=config
-	oc set volumes deployment/vue-storefront-api --add --overwrite=true --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
+	oc set volumes deployment/vue-storefront-api --add --name=vue-storefront-api-config-volume --mount-path=/opt/app-root/src/config -t configmap --configmap-name=vue-storefront-api
 
 If needed you can undo the configuration changes execute the following
 
